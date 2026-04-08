@@ -1,0 +1,27 @@
+name: ai_protocol_brief
+goal: Create a short briefing on recent AI protocol initiatives
+
+inputs:
+  topic: AI-to-AI communication protocols
+  audience: enterprise IT leaders
+
+policy:
+  max_tool_calls: 5
+  require_non_empty_output: true
+
+steps:
+  - name: collect_articles
+    kind: tool
+    tool: search_web
+    args:
+      query: "${inputs.topic}"
+    bind: articles
+
+  - name: summarize_articles
+    kind: model
+    instruction: Summarize the article list into a concise executive brief for ${inputs.audience}.
+    source: articles
+    bind: summary
+
+output:
+  variable: summary
