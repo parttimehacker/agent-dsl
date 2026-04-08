@@ -1,0 +1,30 @@
+name: structurehub_signal_check
+goal: Inspect a StructureHub environmental reading
+
+inputs:
+  temp_c: 24.2
+  hum_pct: 63.0
+  dew_point_c: 19.4
+
+policy:
+  max_tool_calls: 3
+  require_non_empty_output: true
+
+steps:
+  - name: analyze_environment
+    kind: tool
+    tool: structurehub_check
+    args:
+      temp_c: "${inputs.temp_c}"
+      hum_pct: "${inputs.hum_pct}"
+      dew_point_c: "${inputs.dew_point_c}"
+    bind: assessment
+
+  - name: explain_assessment
+    kind: model
+    instruction: Explain the environmental assessment in clear language for a homeowner.
+    source: assessment
+    bind: summary
+
+output:
+  variable: summary
